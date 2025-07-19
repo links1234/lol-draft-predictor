@@ -1,0 +1,19 @@
+# Byte‑compiled / cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# Environment files
+.env
+.env.* 
+
+# PyTest cache
+.pytest_cache/
+
+# Editors
+*.swp
+
+# Egg‑info (from pip install -e .)
+*.egg-info/
