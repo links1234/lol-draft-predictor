@@ -65,4 +65,36 @@ class LoLEsportsAPIClient:
         """
         return self._get("getEventDetails", {"id": event_id, "hl": hl})
 
+    def get_game_draft(self, event_id: int, game_id: int, hl: str = "en-US") -> Dict:
+        """Return blue and red side picks for a game within a match."""
+        details = self.get_event_details(event_id, hl=hl)
+        games = (
+            details.get("data", {})
+            .get("event", {})
+            .get("match", {})
+            .get("games", [])
+        )
+        for game in games:
+            if str(game.get("id")) == str(game_id):
+                draft = game.get("draft")
+                if not draft:
+                    raise ValueError("Draft info missing for game")
+                return self._parse_draft_picks(draft)
+        raise ValueError(f"Game {game_id} not found in event {event_id}")
+
+    @staticmethod
+    def _parse_draft_picks(draft: Dict) -> Dict[str, List[str]]:
+        blue, red = [], []
+        for action_set in draft.get("actions", []):
+            for action in action_set:
+                if action.get("type") != "pick" or not action.get("completed"):
+                    continue
+                champ = action.get("championId")
+                team = str(action.get("teamId"))
+                if team in {"100", "blue", "Blue"}:
+                    blue.append(champ)
+                else:
+                    red.append(champ)
+        return {"blue_side": blue, "red_side": red}
+
     # TODO: add other endpoints (standings, live, completedEvents, etc.)
