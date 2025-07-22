@@ -95,9 +95,25 @@ Prints the list of Leagues available via the LoL Esports API.
    print(data)
    ```
 2. Run:
-   ```bash
-   python scripts/fetch_schedule.py
-   ```
+```bash
+python scripts/fetch_schedule.py
+```
+
+### Fetch Game Draft
+
+```bash
+python scripts/fetch_game_draft.py <event_id> <game_id>
+```
+
+Displays the champion picks for both teams for a specific game.
+
+```python
+from lolpredictor.api_client import LoLEsportsAPIClient
+client = LoLEsportsAPIClient()
+draft = client.get_game_draft(123456789, 1)
+print("Blue:", draft["blue_side"])
+print("Red:", draft["red_side"])
+```
 
 ### Interactive Python
 
